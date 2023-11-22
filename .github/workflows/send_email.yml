@@ -43,7 +43,7 @@ jobs:
         run: |
           # Ensure the binary 'gitleaks' is in the PATH. Then run Gitleak to detect secrets in source code
           bash -s << 'EOF'
-          gitleaks detect -r $ARTIFACT_PATH
+          gitleaks detect --no-git -r $ARTIFACT_PATH
           ls -alh $ARTIFACT_PATH
           echo "::set-output name=leaks::$(jq length $ARTIFACT_PATH)"
           EOF
