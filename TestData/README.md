@@ -17,12 +17,12 @@ redacted
   "ApiTwo": {
     "accessToken": "eygregertg4ert3gtrhzi76gfnghmjhmjhmdfrsfreterhgfndghvbfvb"
   },
-  "ApiFIVEEE": {
-    "accessToken": "ey5gijrijgowetpojwpoefjpowfjpowjfpo9"
-  },
   "MyBotSecrets": {
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
   },
+   "APITESTE": {
+    "accessToken": "sensitivedatateedfeefj;e"
+  }
 }
 
 ## Links
