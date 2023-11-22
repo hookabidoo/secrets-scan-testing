@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
 
       - name: If Current Gitleaks Scan Result is empty
-        if: ${{ env.leaks }} == '0'
+        if: ${{ env.leaks }} == 0
         run: |      
           echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE
           echo "- No hard-coded secrets found." >> $ANALYSE_FILE  
@@ -57,7 +57,7 @@ jobs:
         continue-on-error: true
 
       - name: If leaks found 
-        if: ${{ env.leaks }} != '0'
+        if: ${{ env.leaks }} != 0
         run: |
           jq_filter='.[] | "- The \(.RuleID) rule has detected a plain-text \(.Match | split("=")[0] | split("\":")[0]) from \(.StartLine) line to in the \(.File) file."'
           jq -r "$jq_filter" "$ARTIFACT_PATH" > $ANALYSE_FILE 
@@ -67,7 +67,7 @@ jobs:
         continue-on-error: true
       
       - name: Compare Current vs Previous Results
-        if: ${{ env.leaks }} != '0'
+        if: ${{ env.leaks }} != 0
         run: |
           bash -s << 'EOF'
 
