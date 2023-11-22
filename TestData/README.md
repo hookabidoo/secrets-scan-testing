@@ -21,7 +21,7 @@ redacted
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
   },
    "APITESTE": {
-    "accessToken": "sensitivedatateedfeefj;e"
+    "password": "sensitivedatateedfe"
   }
 }
 
