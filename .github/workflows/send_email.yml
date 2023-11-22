@@ -39,18 +39,17 @@ jobs:
           fi
 
       - name: Run Local Gitleaks Binary
-        id: gitleaks
         run: |
           # Ensure the binary 'gitleaks' is in the PATH. Then run Gitleak to detect secrets in source code
           bash -s << 'EOF'
           gitleaks detect --no-git -r $ARTIFACT_PATH
           ls -alh $ARTIFACT_PATH
-          echo "::set-output name=leaks::$(jq length $ARTIFACT_PATH)"
+          echo "leaks=$(jq length $ARTIFACT_PATH)" >> $GITHUB_ENV
           EOF
         continue-on-error: true
 
       - name: If Current Gitleaks Scan Result is empty
-        if: steps.gitleaks.outputs.leaks == '0'
+        if: ${{ env.leaks }} == '0'
         run: |      
           echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE
           echo "- No hard-coded secrets found." >> $ANALYSE_FILE  
@@ -58,7 +57,7 @@ jobs:
         continue-on-error: true
 
       - name: If leaks found 
-        if: steps.gitleaks.outputs.leaks != '0'
+        if: ${{ env.leaks }} != '0'
         run: |
           jq_filter='.[] | "- The \(.RuleID) rule has detected a plain-text \(.Match | split("=")[0] | split("\":")[0]) from \(.StartLine) line to in the \(.File) file."'
           jq -r "$jq_filter" "$ARTIFACT_PATH" > $ANALYSE_FILE 
@@ -68,7 +67,7 @@ jobs:
         continue-on-error: true
       
       - name: Compare Current vs Previous Results
-        if: steps.gitleaks.outputs.leaks != '0'
+        if: ${{ env.leaks }} != '0'
         run: |
           bash -s << 'EOF'
 
