@@ -3,3 +3,7 @@ repos:
     rev: v8.18.1
     hooks:
       - id: gitleaks
+        description: Detect hardcoded secrets using Gitleaks
+        entry: gitleaks protect --verbose --redact --staged
+        language: golang
+        pass_filenames: false
