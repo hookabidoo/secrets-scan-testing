@@ -20,7 +20,7 @@
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
   },
   "ApiTwo": {
-    "Password": "Secretcode"
+    "Password": "Secretcoddfde"
   }
 }
 
