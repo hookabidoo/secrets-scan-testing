@@ -10,17 +10,17 @@
     "DefaultConnection": "Data Source=.\\SQLEXPRESS;Initial Catalog=FilesDescriptionAzureStorage;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
     "AzureServiceBus": "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=h1fdfdgfjnhmcvbtz65h65hn6hgeb"
   },
+  "APIPASS": {
+    "Password": "Secretcodrtrdfde"
+  },
   "AzureAd": {
     "ClientSecret": "vvfgfhghgjw4tgrgfbgfhgfjsrt",
   },
   "ApiTwo": {
-    "accessToken": "eygregertg4ert3gtrhzi76gfnghmjhmjhmdfrsfreterhgfndghvbfvb"
+    "accessToken": "eygregertg4ert3gtrhzifmfgmklfmfmvvlfvv=""
   },
   "MyBotSecrets": {
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
-  },
-  "ApiTwo": {
-    "Password": "Secretcoddfde"
   }
 }
 
