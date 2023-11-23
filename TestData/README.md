@@ -20,7 +20,7 @@
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
   },
   "ApiTwo": {
-    "password": "secretFiPass"
+    "password": "sThisISaSecretdfdnfglkd"
   }
 }
 
