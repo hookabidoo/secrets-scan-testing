@@ -131,7 +131,7 @@ jobs:
         id: pr_info
         run: |
           echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
-          echo "Creator's email: ${{ github.event.pull_request.user.email }}"
+          echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}"
           
           # Get comments on the pull request
           comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
