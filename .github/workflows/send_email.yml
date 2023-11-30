@@ -127,6 +127,10 @@ jobs:
           name: ${{ env.ARTIFACT_NAME}}
           path: ${{ env.ARTIFACT_PATH}}
       
+      - name: Print GitHub context
+        run: echo "$GITHUB_CONTEXT"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: Get pull request information
         id: pr_info
         run: |
