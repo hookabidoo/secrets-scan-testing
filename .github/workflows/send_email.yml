@@ -13,7 +13,7 @@ jobs:
     steps:
 
       - name: Checkout Repository
-        uses: actions/checkout@v2    
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v2
 
       - name: Create temporary directory
         run: echo "WORKFLOWDIR=$(mktemp -d)" >> $GITHUB_ENV
@@ -63,8 +63,8 @@ jobs:
           jq -r "$jq_filter" "$ARTIFACT_PATH" > $ANALYSE_FILE 
           cat $ANALYSE_FILE 
           leaks_uniq_line=$(uniq "$ANALYSE_FILE" | wc -l)
-          echo "\nRecommendations:\n- Please review and remove the respective secrets from the source code.\n- Completion Time: $(date) " >> $ANALYSE_FILE 
-          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed" >> $SUM_FILE
+          echo "\nRecommendations:\n- Please review and remove the respective secrets from the source code.\n " >> $ANALYSE_FILE 
+          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE
           echo "- Number of plain-text secrets found: $leaks_uniq_line " >> $SUM_FILE
           cat $SUM_FILE
         continue-on-error: true
@@ -122,7 +122,7 @@ jobs:
         continue-on-error: true 
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
         with:
           name: ${{ env.ARTIFACT_NAME}}
           path: ${{ env.ARTIFACT_PATH}}
