@@ -64,7 +64,8 @@ jobs:
           cat $ANALYSE_FILE 
           echo "- Number of plain-text secrets found: $(uniq "$ANALYSE_FILE" | wc -l) "
           echo "\nRecommendations:\n- Please review and remove the respective secrets from the source code.\n " >> $ANALYSE_FILE 
-          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE    
+          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed >> $SUM_FILE
+          echo "- Completion Time: $(date)" >> $SUM_FILE   
           echo "- Number of plain-text secrets found: $(uniq "$ANALYSE_FILE" | wc -l) " >> $SUM_FILE
           cat $SUM_FILE
         continue-on-error: true
