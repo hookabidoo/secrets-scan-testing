@@ -103,8 +103,6 @@ jobs:
   
             # compare the results from the previous run with the current run
             diff_results=$(diff -u "$WORKFLOWDIR/results-prev" "$WORKFLOWDIR/results-current")
-            removed_secrets=$(echo "$diff_results" | grep '^-\[' | wc -l)
-            echo "- Number of detected secrets has been removed since last scan: $removed_secrets" >> $SUM_FILE
             new_secrets=$(echo "$diff_results" | grep '^+\[' | wc -l)
             echo "- Number of new secrets detected in this scan: $new_secrets" >> $SUM_FILE
           else
