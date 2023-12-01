@@ -136,6 +136,9 @@ jobs:
         run: |
           echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
           echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}"
+
+          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/${{ github.event.pull_request.user.login }}
+
           
           # Get comments on the pull request
           comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
