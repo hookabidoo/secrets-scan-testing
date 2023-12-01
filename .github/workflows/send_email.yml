@@ -48,14 +48,6 @@ jobs:
           EOF
         continue-on-error: true
 
-      - name: If Current Gitleaks Scan Result is empty
-        if: ${{ env.leaks == 0 }}
-        run: |      
-          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE
-          echo "- No hard-coded secrets found." >> $ANALYSE_FILE  
-          echo "\nRecommendations:\n- Please do not hard-code secrets into the code.\n " >> $ANALYSE_FILE    
-        continue-on-error: true
-
       - name: If leaks found 
         if: ${{ env.leaks != 0 }}
         run: |
@@ -149,6 +141,7 @@ jobs:
           #echo "$comments" | jq -r '.[] | "\(.user.login): \(.user.html_url) - \(.user.email)"'
 
       - name: Email the result 
+        if: ${{ env.leaks != 0 }}
         run: | 
           bash -s << 'EOF'
           EMAIL_BODY="Hello,\n\nThis email is to inform about the results of the recent scan.
