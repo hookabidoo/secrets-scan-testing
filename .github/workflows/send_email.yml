@@ -48,14 +48,6 @@ jobs:
           EOF
         continue-on-error: true
 
-      - name: If Current Gitleaks Scan Result is empty
-        if: ${{ env.leaks == 0 }}
-        run: |      
-          echo "- Repository: ${{ github.repository }}\n- Scan Status: Completed\n- Completion Time: $(date)" >> $SUM_FILE
-          echo "- No hard-coded secrets found." >> $ANALYSE_FILE  
-          echo "\nRecommendations:\n- Please do not hard-code secrets into the code.\n " >> $ANALYSE_FILE    
-        continue-on-error: true
-
       - name: If leaks found 
         if: ${{ env.leaks != 0 }}
         run: |
@@ -111,8 +103,6 @@ jobs:
   
             # compare the results from the previous run with the current run
             diff_results=$(diff -u "$WORKFLOWDIR/results-prev" "$WORKFLOWDIR/results-current")
-            removed_secrets=$(echo "$diff_results" | grep '^-\[' | wc -l)
-            echo "- Number of detected secrets has been removed since last scan: $removed_secrets" >> $SUM_FILE
             new_secrets=$(echo "$diff_results" | grep '^+\[' | wc -l)
             echo "- Number of new secrets detected in this scan: $new_secrets" >> $SUM_FILE
           else
@@ -121,13 +111,8 @@ jobs:
           EOF
         continue-on-error: true 
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
-        with:
-          name: ${{ env.ARTIFACT_NAME}}
-          path: ${{ env.ARTIFACT_PATH}}
-
       - name: Email the result 
+        if: ${{ env.leaks != 0 }}
         run: | 
           bash -s << 'EOF'
           EMAIL_BODY="Hello,\n\nThis email is to inform about the results of the recent scan.
@@ -158,7 +143,33 @@ jobs:
           done 
           EOF
         continue-on-error: true 
+      
+      - name: Upload Artifact
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
+        with:
+          name: ${{ env.ARTIFACT_NAME}}
+          path: ${{ env.ARTIFACT_PATH}}
+      
+      - name: Print GitHub context
+        run: echo "$GITHUB_CONTEXT"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: Get pull request information
+        id: pr_info
+        run: |
+          echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
+          echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}"
 
+          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/${{ github.event.pull_request.user.login }}
+
+          
+          # Get comments on the pull request
+          comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "${{ github.event.pull_request.comments_url }}")
+          
+          #echo "Comments:"
+          #echo "$comments" | jq -r '.[] | "\(.user.login): \(.user.html_url) - \(.user.email)"'
       - name: Clean up
         run: |
           #rm -rf $WORKFLOWDIR
