@@ -120,6 +120,15 @@ jobs:
           \nScan Details:\n$(cat $ANALYSE_FILE)\n 
           If you have any questions or need further assistance, please don't hesitate to reach out.\nThanks"
           EMAIL_BODY=$(printf "$EMAIL_BODY")
+
+          #send email to pull request owner
+          OWNER_EMAIL=$(git log --pretty=format:"%ae" | head -1)
+          echo "The owner's email associated with the pull request is: $OWNER_EMAIL"
+          aws ses send-email \
+          --from 'application.security@fortescue.com' \
+          --destination "ToAddresses=['$OWNER_EMAIL']" \
+          --message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
+          --profile 871866954555.developer-871866954555  
           
           #send email to AppSec inbox 
           #aws ses send-email \
@@ -149,21 +158,7 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME}}
           path: ${{ env.ARTIFACT_PATH}}
-      
-
-      - name: Get pull request information
-        id: pr_info
-        run: |
-          echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
-          OWNER_EMAIL=$(git log --pretty=format:"%ae" | head -1)
-          echo "The owner's email associated with the pull request is: $OWNER_EMAIL"
-
-          #send email to pull request owner
-          aws ses send-email \
-          --from 'application.security@fortescue.com' \
-          --destination "ToAddresses=['$OWNER_EMAIL']" \
-          --message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
-          --profile 871866954555.developer-871866954555  
+    
 
       - name: Clean up
         run: |
