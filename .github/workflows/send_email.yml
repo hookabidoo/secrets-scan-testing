@@ -124,11 +124,15 @@ jobs:
           #send email to pull request owner
           OWNER_EMAIL=$(git log --pretty=format:"%ae" | head -1)
           echo "The owner's email associated with the pull request is: $OWNER_EMAIL"
-          aws ses send-email \
-          --from 'application.security@fortescue.com' \
-          --destination "ToAddresses=['$OWNER_EMAIL']" \
-          --message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
-          --profile 871866954555.developer-871866954555  
+          
+          OWN=$(git log -n 1 --pretty=format:%ae remotes/origin/${{ github.head_ref }})
+          echo $OWN
+
+          #aws ses send-email \
+          #--from 'application.security@fortescue.com' \
+          #--destination "ToAddresses=['$OWNER_EMAIL']" \
+          #--message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
+          #--profile 871866954555.developer-871866954555  
           
           #send email to AppSec inbox 
           #aws ses send-email \
