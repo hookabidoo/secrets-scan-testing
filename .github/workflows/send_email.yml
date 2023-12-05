@@ -150,16 +150,14 @@ jobs:
           name: ${{ env.ARTIFACT_NAME}}
           path: ${{ env.ARTIFACT_PATH}}
       
-      - name: Print GitHub context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+
       - name: Get pull request information
         id: pr_info
         run: |
           echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
-          echo "Creator's email: ${{ github.event.pull_request.user.email }}"
-        
+          OWNER_EMAIL=$(git log --pretty=format:"%ae" | head -1)
+          echo "The owner's email associated with the pull request is: $OWNER_EMAIL"
+
       - name: Clean up
         run: |
           rm -rf $WORKFLOWDIR
