@@ -24,12 +24,14 @@ jobs:
         run: |
           TOKEN=$GITHUB_TOKEN
           REPO_OWNER=${{ github.repository_owner }}
+          echo $REPO_OWNER
           REPO_NAME=${{ github.repository }}
 
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github+json " \
-          -o $SBOM_FILE \
-          "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/dependency-graph"
+          curl -L -o $SBOM_FILE \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository }}/dependency-graph/sbom
       
       - name: running SCA tool
         run: |
