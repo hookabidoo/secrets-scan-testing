@@ -158,19 +158,11 @@ jobs:
         id: pr_info
         run: |
           echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
-          echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}
-          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/${{ github.event.pull_request.user.login }}
-
-          # Get comments on the pull request
-          comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "${{ github.event.pull_request.comments_url }}")
-          
-          #echo "Comments:"
-          #echo "$comments" | jq -r '.[] | "\(.user.login): \(.user.html_url) - \(.user.email)"'
+          echo "Creator's email: ${{ github.event.pull_request.user.email }}"
+        
       - name: Clean up
         run: |
-          #rm -rf $WORKFLOWDIR
+          rm -rf $WORKFLOWDIR
 
 
           
