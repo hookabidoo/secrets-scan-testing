@@ -31,7 +31,7 @@ jobs:
           -o $SBOM_FILE \
           "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/dependency-graph"
       
-      - name: running SCA 
+      - name: running SCA tool
         run: |
           trivy fs --format spdx $SBOM_FILE --output $ARTIFACT_PATH
 
