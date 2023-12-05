@@ -23,7 +23,8 @@ jobs:
       - name: Get Dependency Graph
         run: |
 
-          cat "https://api.github.com/repos/${{ github.repository }}/dependency-graph/sbom"
+          echo "https://api.github.com/repos/${{ github.repository }}/dependency-graph/sbom"
+          echo ${{ secrets.GITHUB_TOKEN }}
           echo ${{ secrets.GITHUB_TOKEN }}
           curl -L -o $SBOM_FILE \
           -H "Accept: application/vnd.github+json" \
