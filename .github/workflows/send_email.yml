@@ -1,7 +1,7 @@
 name: Secret_scanning
 on: 
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [synchronize, reopened, edited]
   push:
     branches:
       - main
@@ -121,12 +121,12 @@ jobs:
           If you have any questions or need further assistance, please don't hesitate to reach out.\nThanks"
           EMAIL_BODY=$(printf "$EMAIL_BODY")
           
-          #send email to AppSec, Infra inbox 
-          aws ses send-email \
-          --from 'application.security@fortescue.com' \
-          --destination "ToAddresses=['application.security@fortescue.com']" \
-          --message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
-          --profile 871866954555.developer-871866954555  
+          #send email to AppSec inbox 
+          #aws ses send-email \
+          #--from 'application.security@fortescue.com' \
+          #--destination "ToAddresses=['application.security@fortescue.com']" \
+          #--message "Subject={Data='Secret Scanning Results'},Body={Text={Data=\"$EMAIL_BODY\"}}" \
+          #--profile 871866954555.developer-871866954555  
 
           #if store emails in GitHub 
           for text in "${{ vars.EMAILS }}"; do
@@ -158,11 +158,9 @@ jobs:
         id: pr_info
         run: |
           echo "Pull request created by: ${{ github.event.pull_request.user.login }}"
-          echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}"
-
+          echo "Creator's email: ${{ github.event.pull_request.commit.author.email }}
           curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/users/${{ github.event.pull_request.user.login }}
 
-          
           # Get comments on the pull request
           comments=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
