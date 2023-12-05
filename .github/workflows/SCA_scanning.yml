@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "SBOM_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
           echo "ARTIFACT_PATH=${WORKFLOWDIR}/scan_result.json" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=FMGL-SS-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=SCA-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
       - name: Get Dependency Graph
         run: |
@@ -33,7 +33,7 @@ jobs:
       
       - name: running SCA tool
         run: |
-          trivy fs --format spdx $SBOM_FILE --output $ARTIFACT_PATH
+          trivy sbom $SBOM_FILE --output $ARTIFACT_PATH
 
       - name: Upload Artifact
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
