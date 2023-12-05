@@ -1,0 +1,36 @@
+name: SCA Scanning
+on:
+  push:
+    branches:
+      - main
+      - master  
+
+jobs:
+  export-sbom:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v2
+
+      - name: Create temporary directory
+        run: echo "WORKFLOWDIR=$(mktemp -d)" >> $GITHUB_ENV
+
+      - name: Create environmental variables 
+        run: |
+          echo "SBOM_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=FMGL-SS-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Get Dependency Graph
+        run: |
+          TOKEN=$GITHUB_TOKEN
+          REPO_OWNER=${{ github.repository_owner }}
+          REPO_NAME=${{ github.repository }}
+
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github+json " \
+          -o $SBOM_FILE \
+          "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/dependency-graph"
+      
+      # Add steps to process the fetched data into an SBOM format
+      # This might involve parsing the fetched JSON data and transforming it into an SBOM format of your choice
+      # Tools like CycloneDX, SPDX, or custom scripts can be used for this conversion
