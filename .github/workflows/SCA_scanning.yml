@@ -18,6 +18,7 @@ jobs:
       - name: Create environmental variables 
         run: |
           echo "SBOM_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
+          echo "SBOM_ANALYSE_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
           echo "DEPENDABOT_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
           echo "ARTIFACT_PATH=${WORKFLOWDIR}/scan_result.json" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=SCA-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
@@ -31,10 +32,8 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/dependency-graph/sbom
 
           # parsing the fetched JSON data and transforming it into an SBOM format so trivy can process
-          cat $SBOM_FILE  | jq '.sbom' > dependencies.json
-          sed -i -e '${/^$/d;}' dependencies.json
-          cat dependencies.json
-
+          cat $SBOM_FILE  | jq '.sbom' > $SBOM_ANALYSE_FILE
+          sed -i -e '${/^$/d;}' $SBOM_ANALYSE_FILE
 
       - name: Get Dependabot alert
         run: | 
