@@ -17,22 +17,28 @@ jobs:
       - name: Create environmental variables 
         run: |
           echo "SBOM_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
+          echo "DEPENDABOT_FILE=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
           echo "ARTIFACT_PATH=${WORKFLOWDIR}/scan_result.json" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=SCA-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
-      - name: Get Dependency Graph
+      - name: Get Dependency Graph SBOM 
         run: |
-
-          echo "https://api.github.com/repos/${{ github.repository }}/dependency-graph/sbom"
-          echo ${{ secrets.GITHUB_TOKEN }}
-          echo ${{ secrets.GITHUB_TOKEN }}
           curl -L -o $SBOM_FILE \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ github.repository }}/dependency-graph/sbom
 
-          cat $SBOM_FILE
+          # parsing the fetched JSON data and transforming it into an SBOM format so trivy can process
+          cat $SBOM_FILE  | jq '.sbom' > $SBOM_FILE 
+
+      - name: Get Dependabot alert
+        run: | 
+          curl -L -o $DEPENDABOT_FILE\
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/${{ github.repository }}/dependabot/alerts
       
       - name: running SCA tool
         run: |
@@ -41,9 +47,14 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
         with:
-          name: ${{ env.ARTIFACT_NAME}}
-          path: ${{ env.ARTIFACT_PATH}}
+          name: ${{ env.ARTIFACT_NAME }}
+          path: |
+            ${{ env.ARTIFACT_PATH }}
+            ${{ env.DEPENDABOT_FILE }}
 
       # Add steps to process the fetched data into an SBOM format
       # This might involve parsing the fetched JSON data and transforming it into an SBOM format of your choice
       # Tools like CycloneDX, SPDX, or custom scripts can be used for this conversion
+
+
+      
