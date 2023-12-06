@@ -52,9 +52,6 @@ jobs:
             ${{ env.ARTIFACT_PATH }}
             ${{ env.DEPENDABOT_FILE }}
 
-      # Add steps to process the fetched data into an SBOM format
-      # This might involve parsing the fetched JSON data and transforming it into an SBOM format of your choice
-      # Tools like CycloneDX, SPDX, or custom scripts can be used for this conversion
 
 
       
