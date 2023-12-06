@@ -4,9 +4,11 @@ on:
     branches:
       - main
       - master  
+
+permissions: write-all
+
 jobs:
   build:
-    permissions: write-all
     runs-on: self-hosted
     steps:
       - name: Checkout Repository
