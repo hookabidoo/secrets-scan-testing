@@ -35,13 +35,13 @@ jobs:
           cat $SBOM_FILE  | jq '.sbom' > $SBOM_ANALYSE_FILE
           sed -i -e '${/^$/d;}' $SBOM_ANALYSE_FILE
 
-      - name: Get Dependabot alert
-        run: | 
-          curl -L -o $DEPENDABOT_FILE\
+          curl -L -o $DEPENDABOT_FILE \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ github.repository }}/dependabot/alerts
+
+          cat $DEPENDABOT_FILE
       
       - name: running SCA tool
         run: |
