@@ -5,11 +5,12 @@ on:
       - main
       - master  
 
-permissions: write-all
+
 
 jobs:
   build:
     runs-on: self-hosted
+    permissions: write-all
     steps:
       - name: Checkout Repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v2
@@ -25,8 +26,9 @@ jobs:
           echo "ARTIFACT_PATH=${WORKFLOWDIR}/scan_result.json" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=SCA-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
-      - name: Get Dependency Graph SBOM 
+      - name: Get artifacts 
         run: |
+          # Dependency Graph SBOM
           curl -L -o $SBOM_FILE \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
