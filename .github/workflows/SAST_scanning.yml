@@ -1,16 +1,13 @@
 name: SAST Scanning
 on:
+  #run the weekly scan on midnight Saturday
+  schedule: 
+      - cron:  '0 0 * * 6' 
+  #run when changes happens to main/master branch
   push:
     branches:
       - main
-      - master  
-  schedule:
-      - cron:  '0 1 * * 6' 
-  
-permissions: 
-  pull-requests: write
-  issues: write
-  repository-projects: write
+      - master 
 
 jobs:
   build:
@@ -24,28 +21,32 @@ jobs:
 
       - name: Create environmental variables 
         run: |
-          echo "SBOM_FILE=${WORKFLOWDIR}/spdx_sbom.json" >> $GITHUB_ENV
-          echo "SBOM_ANALYSE_FILE=${WORKFLOWDIR}/results.json" >> $GITHUB_ENV
-          echo "DEPENDABOT_FILE=${WORKFLOWDIR}/dependabot_alert.json" >> $GITHUB_ENV
+          echo "SAST_FILE=${WORKFLOWDIR}/result.json" >> $GITHUB_ENV
           echo "ARTIFACT_PATH=${WORKFLOWDIR}/scan_result.json" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=SCA-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=SAST-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
+    
+      - name: check if semgrep installed
+        run: |
+         if ! command -v semgrep &> /dev/null; then
+           echo "semgrep is not installed, installing..."
+           python3 -m pip install semgrep  
+         else
+           echo "semgrep is already installed"
+         fi
 
       - name: Run full scan
         run: |
-          semgrep \
-            --sarif --output report.sarif \
-            --metrics=off \
-            --config="p/default"
+          semgrep --json --output $ARTIFACT_PATH --metrics=off --config="p/default"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
         with:
-            name: report.sarif
-            path: report.sarif
-            
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_PATH }}
+    
       - name: Download report
         uses: actions/download-artifact@v2
         with: 
-          name: report.sarif
+          name: ${{ env.ARTIFACT_NAME }}
 
       
