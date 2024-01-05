@@ -21,9 +21,6 @@
   },
   "MyBotSecrets": {
     "ApiKey": "Yp9B3$7i6epJbuUfOcgC"
-  },
-  "MyPassword":{
-   "password": "passkey1234"
   }
 }
 
