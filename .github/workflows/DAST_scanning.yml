@@ -17,7 +17,8 @@ jobs:
   
         - name: Create environmental variables 
           run: |
-            echo "ARTIFACT_PATH=${WORKFLOWDIR}/current-results.json" >> $GITHUB_ENV
+            echo "ARTIFACT_PATH1=${WORKFLOWDIR}/html-report.html" >> $GITHUB_ENV
+            echo "ARTIFACT_PATH2=${WORKFLOWDIR}/json-report.json" >> $GITHUB_ENV
             echo "ARTIFACT_NAME=DAST-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
         - name: Log in to Docker Hub
@@ -25,15 +26,25 @@ jobs:
           with:
             username: ${{ secrets.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
+        
+        - name: Install Zap Proxy image if not installed
+          run: |
+            if docker image ls | grep "softwaresecurityproject/zap-stable"; then 
+                echo "Docker image exist. Proceed to run the scan." 
+            else
+                docker pull softwaresecurityproject/zap-stable
+            fi
+  
         - name: Run ZAP scanning against app running on host OS 
           run: |
-            docker run -t --name softwaresecurityproject/zap-stable zap-baseline.py -t "http://localhost:3000/" -d -r /zap/report.html
-            # docker exec zap-container zap-api-scan.py -t "https://your-live-app-url" -d -r /zap/report.html
+            docker run -v $(pwd):/zap/wrk/:rw -t softwaresecurityproject/zap-stable:latest zap-full-scan.py \
+            -t http://$(ipconfig getifaddr en0):3000 -g gen.conf -r $ARTIFACT_PATH1 -J ARTIFACT_PATH2
 
         - name: Save ZAP Scan results
           uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
           with:
             name: ${{ env.ARTIFACT_NAME}}
-            path: ${{ env.ARTIFACT_PATH}}
+            path: 
+                ${{ env.ARTIFACT_PATH1 }}
+                ${{ env.ARTIFACT_PATH2 }}
           
