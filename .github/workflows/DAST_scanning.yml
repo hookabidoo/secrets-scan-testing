@@ -26,11 +26,9 @@ jobs:
             username: ${{ secrets.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-        - name: Run ZAP Scan
+        - name: Run ZAP scanning against app running on host OS 
           run: |
-            docker run -t --name zap-container -d -p 8080:8080 your-docker-registry/your-zap-image:latest \
-            && sleep 10 \
-            && docker exec zap-container zap-api-scan.py -t "http://localhost:3000/" -d -r /zap/report.html
+            docker run -t --name softwaresecurityproject/zap-stable zap-baseline.py -t "http://localhost:3000/" -d -r /zap/report.html
             # docker exec zap-container zap-api-scan.py -t "https://your-live-app-url" -d -r /zap/report.html
 
         - name: Save ZAP Scan results
