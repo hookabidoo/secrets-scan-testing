@@ -38,7 +38,7 @@ jobs:
         - name: Run ZAP scanning against app running on host OS 
           run: |
             status_code=$(curl -LI http://$(ipconfig getifaddr en0):3000 -o /dev/null -w '%{http_code}\n' -s)
-            if $status_code == 200; then
+            if [ $status_code -eq 200 ]; then
                 echo "The application is running."
             else 
                 echo "The application is not reachable. Please check the application."
