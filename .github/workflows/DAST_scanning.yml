@@ -1,0 +1,29 @@
+name: DAST Scanning
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v2
+
+        - name: Pull ZAP Proxy Docker image
+          run: docker pull your-docker-registry/your-zap-image:latest
+
+        - name: Run ZAP Scan
+          run: |
+            docker run -t --name zap-container -d -p 8080:8080 your-docker-registry/your-zap-image:latest \
+            && sleep 10 \
+            && docker exec zap-container zap-api-scan.py -t "http://localhost:3000/" -d -r /zap/report.html
+            # docker exec zap-container zap-api-scan.py -t "https://your-live-app-url" -d -r /zap/report.html
+
+        - name: Save ZAP Scan results
+          uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
+          with:
+            name: zap-results
+            path: /path/to/your/workspace/zap-container:/zap
