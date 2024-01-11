@@ -25,9 +25,6 @@ jobs:
           with:
             username: ${{ secrets.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-         
-        #- name: Pull ZAP Proxy Docker image
-        #  run: docker pull your-docker-registry/your-zap-image:latest
 
         - name: Run ZAP Scan
           run: |
