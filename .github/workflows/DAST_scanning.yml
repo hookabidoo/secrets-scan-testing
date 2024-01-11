@@ -38,7 +38,7 @@ jobs:
         - name: Run ZAP scanning against app running on host OS 
           run: |
             docker run -v $(pwd):/zap/wrk/:rw -t softwaresecurityproject/zap-stable:latest zap-full-scan.py \
-            -t http://$(ipconfig getifaddr en0):3000 -g gen.conf -r $ARTIFACT_PATH1 -J ARTIFACT_PATH2
+            -t http://$(ipconfig getifaddr en0):3000 -d -g gen.conf -r $ARTIFACT_PATH1 -J ARTIFACT_PATH2
 
         - name: Save ZAP Scan results
           uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
