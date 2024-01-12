@@ -19,7 +19,7 @@ jobs:
   
         - name: Create environmental variables 
           run: |
-            echo "ARTIFACT_PATH1=${WORKFLOWDIR}/html-report.html" >> $GITHUB_ENV
+            echo "ARTIFACT_PATH1=html-report.html" >> $GITHUB_ENV
             echo "ARTIFACT_PATH2=${WORKFLOWDIR}/json-report.json" >> $GITHUB_ENV
             echo "ARTIFACT_NAME=DAST-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
@@ -42,6 +42,7 @@ jobs:
             status_code=$(curl -LI http://$(ipconfig getifaddr en0):3000 -o /dev/null -w '%{http_code}\n' -s)
             if [ $status_code -eq 200 ]; then
                 echo "The application is running."
+                cd $WORKFLOWDIR
                 docker run -v $(pwd):/zap/wrk/:rw -t softwaresecurityproject/zap-stable:latest zap-baseline.py \
                 -t http://$(ipconfig getifaddr en0):3000 -d -D 4 -g gen.conf -r $ARTIFACT_PATH1 
                 ls -lah 
