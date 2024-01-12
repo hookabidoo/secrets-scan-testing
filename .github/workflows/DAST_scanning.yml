@@ -16,11 +16,6 @@ jobs:
           run: |
             #echo "WORKFLOWDIR=$(mktemp -d)" >> $GITHUB_ENV
             echo "WORKFLOWDIR=/Users/ruby.le/Downloads/testing" >> $GITHUB_ENV
-  
-        - name: Create environmental variables 
-          run: |
-            echo "ARTIFACT_PATH2=${WORKFLOWDIR}/json-report.json" >> $GITHUB_ENV
-            echo "ARTIFACT_NAME=DAST-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
         - name: Log in to Docker Hub
           uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
@@ -47,8 +42,13 @@ jobs:
             else 
                 echo "The application is not reachable. Please check the application."
             fi
-            echo "ARTIFACT_PATH1=$WORKFLOWDIR/html-report.html" >> $GITHUB_ENV
           continue-on-error: true
+
+        - name: Create environmental variables 
+          run: |
+            echo "ARTIFACT_PATH2=${WORKFLOWDIR}/json-report.json" >> $GITHUB_ENV
+            echo "ARTIFACT_PATH1=${WORKFLOWDIR}/html-report.html" >> $GITHUB_ENV
+            echo "ARTIFACT_NAME=DAST-${GITHUB_RUN_ID}-${GITHUB_SHA}" >> $GITHUB_ENV
 
         - name: Save ZAP Scan results
           uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 #v2
